@@ -1,5 +1,5 @@
 
-import {  StyleSheet, Text, View, Pressable, Image} from 'react-native';
+import {  StyleSheet, Text, View, Pressable} from 'react-native';
 
 function GoalItem(props){
     return <View style={styles.goalItem}>
