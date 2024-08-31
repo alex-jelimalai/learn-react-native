@@ -1,28 +1,39 @@
 import MealDetails from "../components/MealDetails";
 import { MEALS } from "../data/dummy-data";
-import { Text, View, Image, StyleSheet,ScrollView ,Button} from "react-native";
+import { Text, View, Image, StyleSheet, ScrollView, Button } from "react-native";
 import SubTitle from "../components/mealdetail/SubTitle";
 import List from "../components/mealdetail/List";
-import { useLayoutEffect } from "react";
+import { useLayoutEffect, useContext } from "react";
 import IconButton from "../components/IconButton";
+import { FavoriteContext } from "../store/favorite-context";
 
 function MealDetailScreen({ route, navigation }) {
   const mealId = route.params.mealId;
   const meal = MEALS.find(m => m.id == mealId);
+  const { addFavorite, removeFavorite, ids } = useContext(FavoriteContext);
 
-  function handleHeaderButton(){
-    console.log("Hit me")
+  const isMealFavorite = ids.includes(mealId)
+
+  function changeFavoriteStatusHandler() {
+    if(isMealFavorite){
+      removeFavorite(mealId);
+    }else {
+      addFavorite(mealId)
+    }
   }
-  useLayoutEffect(()=>{
-      navigation.setOptions({
-        headerRight: ()=>{
-          return <IconButton icon='star' onPress={handleHeaderButton} color='white'/> 
-        }
-      })
-  },[navigation,handleHeaderButton]);
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => {
+        return <IconButton
+          icon={isMealFavorite ? 'star' : 'star-outline'}
+          onPress={changeFavoriteStatusHandler} color='white' />
+      }
+    })
+  }, [navigation, changeFavoriteStatusHandler]);
 
 
- 
+
+
 
   return <ScrollView style={styles.root}>
     <Image source={{ uri: meal.imageUrl }} style={styles.image} />
@@ -43,8 +54,8 @@ export default MealDetailScreen;
 
 
 const styles = StyleSheet.create({
-  root:{
-    marginBottom:32
+  root: {
+    marginBottom: 32
   },
   image: {
     width: '100%',
@@ -60,11 +71,11 @@ const styles = StyleSheet.create({
   textDetailsStyle: {
     color: 'white'
   },
-  listContainer:{
+  listContainer: {
     maxWidth: '80%',
   },
-  listOuterContainer:{
-    alignItems:'center'
+  listOuterContainer: {
+    alignItems: 'center'
   }
 });
 
